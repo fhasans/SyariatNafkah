@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Qawwam | Kalkulator Nafkah Syariah</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕌</text></svg>">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Al-Qawwam</h1>
+            <div class="subtitle">Sistem Kalkulator Nafkah Syariah</div>
+            <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                <a href="thr.html"
+                    style="color: var(--gold); text-decoration: none; font-size: 0.9rem; border: 1px solid var(--gold); padding: 5px 10px; border-radius: 20px;">
+                    🎁 Kalkulator THR
+                </a>
+                <a href="tabungan.html"
+                    style="color: #10b981; text-decoration: none; font-size: 0.9rem; border: 1px solid #10b981; padding: 5px 10px; border-radius: 20px;">
+                    💰 Alokasi Tabungan
+                </a>
+                <a href="fidyah.html"
+                    style="color: #8b5cf6; text-decoration: none; font-size: 0.9rem; border: 1px solid #8b5cf6; padding: 5px 10px; border-radius: 20px;">
+                    🌙 Cek Fidyah Istri
+                </a>
+                <a href="emas.html"
+                    style="color: #f59e0b; text-decoration: none; font-size: 0.9rem; border: 1px solid #f59e0b; padding: 5px 10px; border-radius: 20px;">
+                    🥇 Gold Saver
+                </a>
+            </div>
+        </header>
+
+        <!-- INPUT SECTION -->
+        <main id="input-section" class="card fade-in">
+            <div class="input-group">
+                <label>Sumber Penghasilan</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="incomeType" value="fixed" checked onchange="toggleFormMode()">
+                        <div class="radio-tile">
+                            <span class="radio-icon">💼</span>
+                            <span class="radio-label">Gaji Tetap</span>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="incomeType" value="variable" onchange="toggleFormMode()">
+                        <div class="radio-tile">
+                            <span class="radio-icon">📈</span>
+                            <span class="radio-label">Tidak Tetap</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="incomeAmount">Total Penghasilan (Rp)</label>
+                <!-- Changed to type="text" to allow dot formatting -->
+                <input type="text" id="incomeAmount" class="input-field" placeholder="Contoh: 10.000.000"
+                    inputmode="numeric">
+            </div>
+
+            <div id="fixed-details">
+                <!-- 1. Status Istri -->
+                <div class="input-group">
+                    <label>Status Kerja Istri</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="wifeStatus" value="not_working" checked>
+                            <div class="radio-tile">
+                                <span class="radio-icon">🏠</span>
+                                <span class="radio-label">Ibu Rumah Tangga</span>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="wifeStatus" value="working">
+                            <div class="radio-tile">
+                                <span class="radio-icon">👩‍💻</span>
+                                <span class="radio-label">Wanita Karir</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 2. Anak (Conditional Count) -->
+                <div class="input-group">
+                    <label>Punya Anak?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="hasChild" value="yes" onchange="toggleChildInput()">
+                            <div class="radio-tile">
+                                <span class="radio-icon">👶</span>
+                                <span class="radio-label">Ya</span>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="hasChild" value="no" checked onchange="toggleChildInput()">
+                            <div class="radio-tile">
+                                <span class="radio-icon">❌</span>
+                                <span class="radio-label">Belum</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="child-input-container" class="input-group hidden fade-in"
+                    style="margin-left: 10px; border-left: 2px solid var(--primary);">
+                    <label for="childCount" style="font-size: 0.9rem;">Jumlah Anak</label>
+                    <input type="number" id="childCount" class="input-field" placeholder="0" value="0" min="0">
+                </div>
+
+                <!-- 3. Tempat Tinggal -->
+                <div class="input-group">
+                    <label>Tempat Tinggal Saat Ini</label>
+                    <select id="housingType" class="input-field" onchange="toggleHousingInput()" style="height: 50px;">
+                        <option value="parents_husband">Rumah Orang Tua Suami (Gratis)</option>
+                        <option value="parents_wife">Rumah Orang Tua Istri (Gratis)</option>
+                        <option value="own">Rumah Sendiri (Hak Milik)</option>
+                        <option value="rent">Sewa / Ngontrak</option>
+                        <option value="apartment">Apartemen (Sewa/IPL)</option>
+                    </select>
+                </div>
+
+                <div id="housing-cost-container" class="input-group hidden fade-in"
+                    style="margin-left: 10px; border-left: 2px solid var(--primary);">
+                    <label id="housing-cost-label" for="housingCost" style="font-size: 0.9rem;">Biaya Sewa/Pajak per
+                        Bulan (Rp)</label>
+                    <input type="text" id="housingCost" class="input-field" placeholder="Contoh: 1.500.000"
+                        inputmode="numeric">
+                </div>
+
+                <!-- 4. Kondisi Orang Tua (Suami) -->
+                <div class="section-divider">Kondisi Orang Tua Kandung (Suami)</div>
+
+                <!-- Ibu Suami -->
+                <div class="input-group">
+                    <label>Ibu Suami Masih Hidup?</label>
+                    <select id="momHusbandStatus" class="input-field">
+                        <option value="alive">Ya, Sehat</option>
+                        <option value="alive_debt">Ya, Ada Hutang/Butuh Bantuan Rutin</option>
+                        <option value="deceased">Tidak (Meninggal Dunia)</option>
+                        <option value="deceased_debt">Tidak, Tapi Masih Ada Hutang</option>
+                    </select>
+                </div>
+
+                <!-- Bapak Suami -->
+                <div class="input-group">
+                    <label>Bapak Suami Masih Hidup?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="dadHusbandStatus" value="alive" checked>
+                            <div class="radio-tile"><span class="radio-label">Ya</span></div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="dadHusbandStatus" value="deceased">
+                            <div class="radio-tile"><span class="radio-label">Tidak</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 5. Kondisi Mertua (Orang Tua Istri) -->
+                <div class="section-divider">Kondisi Mertua (Orang Tua Istri)</div>
+
+                <!-- Ibu Istri -->
+                <div class="input-group">
+                    <label>Ibu Istri (Mertua) Masih Hidup?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="momWifeStatus" value="alive" checked>
+                            <div class="radio-tile"><span class="radio-label">Ya</span></div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="momWifeStatus" value="deceased">
+                            <div class="radio-tile"><span class="radio-label">Tidak</span></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bapak Istri -->
+                <div class="input-group">
+                    <label>Bapak Istri (Mertua) Masih Hidup?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="dadWifeStatus" value="alive" checked>
+                            <div class="radio-tile"><span class="radio-label">Ya</span></div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="dadWifeStatus" value="deceased">
+                            <div class="radio-tile"><span class="radio-label">Tidak</span></div>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="btn-calculate" onclick="calculate()">Hitung Pembagian</button>
+        </main>
+
+        <!-- RESULTS SECTION -->
+        <div id="results-section" class="hidden">
+
+            <button class="btn-calculate"
+                style="background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); margin-bottom: 20px; width: auto; padding: 10px 20px;"
+                onclick="resetForm()">← Hitung Ulang</button>
+
+            <!-- Context Card -->
+            <div id="context-card" class="card hidden fade-in"
+                style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9)); border: 1px solid var(--border);">
+                <div class="result-header">
+                    <div class="result-title" style="font-size: 1rem; color: var(--text-muted);">Asumsi & Kondisi
+                        Keluarga</div>
+                </div>
+                <ul id="context-list"
+                    style="list-style-type: disc; margin-left: 20px; font-size: 0.9rem; color: var(--text-main); line-height: 1.6;">
+                    <!-- JS Populated -->
+                </ul>
+            </div>
+
+            <!-- GRID CONTAINER -->
+            <div class="results-grid">
+
+                <!-- 1. Salary Info (Left Top) -->
+                <div id="salary-display" class="salary-display-card hidden fade-in">
+                    <!-- JS populated -->
+                </div>
+
+                <!-- 2. Wife Card (Right Top) -->
+                <div class="card section-wife fade-in">
+                    <div class="result-header">
+                        <div class="result-title">Rumah Tangga (Istri & Anak)</div>
+                        <div class="result-total" id="total-household">Rp 0</div>
+                    </div>
+                    <ul class="breakdown-list" id="list-household">
+                        <!-- JS populated -->
+                    </ul>
+                    <div id="note-wife" class="note-box hidden"
+                        style="background: rgba(236, 72, 153, 0.1); border-color: #ec4899; color: #ec4899;"></div>
+                </div>
+
+                <!-- 3. Ibu Kandung -->
+                <div class="card section-mother fade-in" style="animation-delay: 0.1s">
+                    <div class="result-header">
+                        <div class="result-title">Birrul Walidain (Ibu)</div>
+                        <div class="result-total" id="total-mother">Rp 0</div>
+                    </div>
+                    <div class="note-box">
+                        Prioritas Tinggi: Hutang Ibu, Makan, & Sewa.
+                    </div>
+                </div>
+
+                <!-- 4. Ayah Kandung -->
+                <div class="card section-father fade-in" style="animation-delay: 0.2s">
+                    <div class="result-header">
+                        <div class="result-title">Birrul Walidain (Ayah)</div>
+                        <div class="result-total" id="total-father">Rp 0</div>
+                    </div>
+                    <div class="note-box">
+                        Nafkah pokok pribadi (makan).
+                    </div>
+                </div>
+
+                <!-- 5. Mertua -->
+                <div class="card fade-in" style="animation-delay: 0.3s">
+                    <div class="result-header">
+                        <div class="result-title">Ihsan (Mertua)</div>
+                        <div class="result-total" id="total-inlaws">Rp 0</div>
+                    </div>
+                    <div class="note-box" id="note-inlaws"></div>
+                </div>
+
+                <!-- 6. Tabungan -->
+                <div class="card section-savings fade-in" style="animation-delay: 0.4s">
+                    <div class="result-header">
+                        <div class="result-title">Tabungan & Darurat</div>
+                        <div class="result-total" id="total-savings">Rp 0</div>
+                    </div>
+                    <div class="note-box">
+                        Dana darurat (Suami 15%).
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Qawwam | Kalkulator THR</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1 style="color: var(--gold);">Kalkulator THR</h1>
+            <div class="subtitle">Distribusi Berkah Hari Raya</div>
+        </header>
+
+        <a href="index.html"
+            style="display: inline-block; margin-bottom: 20px; color: var(--text-muted); text-decoration: none;">←
+            Kembali ke Kalkulator Gaji</a>
+
+        <!-- INPUT SECTION -->
+        <main class="card fade-in">
+            <div class="input-group">
+                <label for="thrAmount">Total Uang THR (Rp)</label>
+                <input type="text" id="thrAmount" class="input-field" placeholder="Contoh: 5.000.000"
+                    inputmode="numeric">
+            </div>
+
+            <button class="btn-calculate" style="background: linear-gradient(135deg, var(--gold), #b45309);"
+                onclick="calculateTHR()">Hitung Distribusi THR</button>
+        </main>
+
+        <!-- RESULTS SECTION -->
+        <div id="result-container" class="hidden">
+            <div id="result-list">
+                <!-- Javascript will populate this -->
+            </div>
+        </div>
+
+    </div>
+
+    <script src="thr.js"></script>
+</body>
+
+</html>

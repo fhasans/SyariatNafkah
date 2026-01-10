@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Qawwam | Alokasi Tabungan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐖</text></svg>">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1 style="color: #10b981;">Alokasi Tabungan</h1>
+            <div class="subtitle">Manajemen Sisa Dana & Aset</div>
+        </header>
+
+        <a href="index.html"
+            style="display: inline-block; margin-bottom: 20px; color: var(--text-muted); text-decoration: none;">←
+            Kembali ke Menu Utama</a>
+
+        <!-- INPUT SECTION -->
+        <main class="card fade-in">
+            <div class="input-group">
+                <label for="savingsAmount">Total Dana Tabungan/Sisa Gaji (Rp)</label>
+                <input type="text" id="savingsAmount" class="input-field" placeholder="Contoh: 2.000.000"
+                    inputmode="numeric">
+            </div>
+
+            <button class="btn-calculate savings-btn" onclick="calculateSavings()">Hitung Alokasi</button>
+        </main>
+
+        <!-- RESULTS SECTION -->
+        <div id="result-container" class="hidden">
+            <div id="result-list">
+                <!-- Javascript will populate this -->
+            </div>
+        </div>
+
+    </div>
+
+    <script src="tabungan.js"></script>
+</body>
+
+</html>
