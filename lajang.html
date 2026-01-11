@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Nafkah Lajang - Al-Qawwam</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <a href="index.html"
+                style="text-decoration: none; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px; display: inline-block;">
+                ← Kembali ke Menu Utama
+            </a>
+            <h1>Al-Qawwam Lajang</h1>
+            <div class="subtitle">Manajemen Keuangan Pria Lajang (Ikhtiar Menikah)</div>
+        </header>
+
+        <div class="card fade-in">
+            <!-- 1. Selection Mode -->
+            <div class="input-group">
+                <label for="incomeType">Jenis Penghasilan</label>
+                <select id="incomeType" class="input-field" onchange="toggleInputMode()">
+                    <option value="fixed">Gaji Tetap (Bulanan)</option>
+                    <option value="variable">Tidak Tetap (Freelance/Bisnis)</option>
+                </select>
+            </div>
+
+            <!-- MODE A: Fixed Salary Inputs -->
+            <div id="input-fixed" class="fade-in">
+                <div class="input-group">
+                    <label for="grossSalary">Gaji Kotor (Bruto)</label>
+                    <input type="text" id="grossSalary" class="input-field" placeholder="Contoh: 8.000.000"
+                        onkeyup="formatCurrency(this)">
+                    <small style="color: var(--text-muted); font-size: 0.8rem;">Digunakan untuk perhitungan Zakat 2.5%
+                        (Ahwat).</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="netSalary">Gaji Bersih Diterima (THP)</label>
+                    <input type="text" id="netSalary" class="input-field" placeholder="Contoh: 7.500.000"
+                        onkeyup="formatCurrency(this)">
+                    <small style="color: var(--text-muted); font-size: 0.8rem;">Uang real yang masuk rekening.</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="fuelCost">Biaya Bensin / Transport (Sebulan)</label>
+                    <input type="text" id="fuelCost" class="input-field" placeholder="Contoh: 300.000"
+                        onkeyup="formatCurrency(this)">
+                </div>
+            </div>
+
+            <!-- MODE B: Variable Income Inputs -->
+            <div id="input-variable" class="hidden fade-in">
+                <div class="input-group">
+                    <label for="currentIncome">Penghasilan Saat Ini</label>
+                    <input type="text" id="currentIncome" class="input-field" placeholder="Contoh: 5.000.000"
+                        onkeyup="formatCurrency(this)">
+                    <small style="color: var(--text-muted); font-size: 0.8rem;">Total uang yang didapat hari ini/bulan
+                        ini.</small>
+                </div>
+            </div>
+
+            <button class="btn-calculate" onclick="calculateLajang()">
+                <i class="fas fa-calculator"></i> Hitung Alokasi
+            </button>
+        </div>
+
+        <!-- Result Container -->
+        <div id="result-container" class="hidden fade-in">
+            <div class="section-divider">Hasil Alokasi Nafkah</div>
+            <div id="result-list" class="results-grid">
+                <!-- Cards will be injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="lajang.js"></script>
+</body>
+
+</html>

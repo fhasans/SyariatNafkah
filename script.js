@@ -1,8 +1,11 @@
 // 1. Auto-format Input (Thousands Separator)
 const inputField = document.getElementById('incomeAmount');
+const grossField = document.getElementById('grossSalaryMain');
+const netField = document.getElementById('netSalaryMain');
 const housingCostField = document.getElementById('housingCost');
 
 function formatNativeInput(el) {
+    if (!el) return; // Guard
     el.addEventListener('input', function (e) {
         let value = this.value.replace(/[^0-9]/g, '');
         if (value) {
@@ -14,6 +17,8 @@ function formatNativeInput(el) {
 }
 
 formatNativeInput(inputField);
+formatNativeInput(grossField);
+formatNativeInput(netField);
 formatNativeInput(housingCostField);
 
 // Format Currency to IDR helper
@@ -29,11 +34,19 @@ const formatRupiah = (number) => {
 function toggleFormMode() {
     const incomeType = document.querySelector('input[name="incomeType"]:checked').value;
     const fixedDetails = document.getElementById('fixed-details');
+    // New Containers
+    const fixedInputContainer = document.getElementById('input-fixed-container');
+    const variableInputContainer = document.getElementById('input-variable-container');
+
     if (incomeType === 'variable') {
         fixedDetails.classList.add('hidden');
+        fixedInputContainer.classList.add('hidden');
+        variableInputContainer.classList.remove('hidden');
     } else {
         fixedDetails.classList.remove('hidden');
         fixedDetails.classList.add('fade-in');
+        fixedInputContainer.classList.remove('hidden');
+        variableInputContainer.classList.add('hidden');
     }
 }
 
@@ -64,26 +77,40 @@ function toggleHousingInput() {
 }
 
 // Main Calculate Function
+// Main Calculate Function
 function calculate() {
-    const rawValue = document.getElementById('incomeAmount').value.replace(/\./g, '');
-    const incomeAmount = parseFloat(rawValue);
-
-    if (!incomeAmount || incomeAmount <= 0) {
-        alert("Mohon masukkan jumlah penghasilan yang valid.");
-        return;
-    }
-
     const incomeType = document.querySelector('input[name="incomeType"]:checked').value;
     const resultsSection = document.getElementById('results-section');
     const inputSection = document.getElementById('input-section');
 
-    inputSection.classList.add('hidden');
-    resultsSection.classList.remove('hidden');
-
     if (incomeType === 'variable') {
+        const rawValue = document.getElementById('incomeAmount').value.replace(/\./g, '');
+        const incomeAmount = parseFloat(rawValue);
+
+        if (!incomeAmount || incomeAmount <= 0) {
+            alert("Mohon masukkan jumlah penghasilan yang valid.");
+            return;
+        }
+
+        inputSection.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
         calculateScenarioA(incomeAmount);
+
     } else {
-        calculateScenarioB(incomeAmount);
+        // FIXED MODE: Read Gross and Net
+        const rawGross = document.getElementById('grossSalaryMain').value.replace(/\./g, '');
+        const rawNet = document.getElementById('netSalaryMain').value.replace(/\./g, '');
+        const gross = parseFloat(rawGross) || 0;
+        const net = parseFloat(rawNet) || 0;
+
+        if (gross <= 0 || net <= 0) {
+            alert("Mohon masukkan Gaji Kotor dan Gaji Bersih (THP).");
+            return;
+        }
+
+        inputSection.classList.add('hidden');
+        resultsSection.classList.remove('hidden');
+        calculateScenarioB(gross, net);
     }
 }
 
@@ -106,11 +133,15 @@ function calculateScenarioA(total) {
     });
 }
 
-function calculateScenarioB(total) {
-    // 1. Zakat (2.5% if > 6jt)
+function calculateScenarioB(gross, net) {
+    // 1. Zakat (2.5% calculated from GROSS)
+    // Rule: Zakat 2.5% if Gross >= 6.8jt (Nisab Emas 85g approx, let's keep logic simple or existing)
+    // User logic: Zakat = Gross * 2.5%
     let zakatAmount = 0;
-    if (total >= 6000000) {
-        zakatAmount = total * 0.025;
+    // Assuming Nisab check or just apply if user inputs typical salary?
+    // Let's apply standard logic: if Gross >= 6jt (existing logic was 6jt)
+    if (gross >= 6000000) {
+        zakatAmount = gross * 0.025;
     }
 
     // 2. Fixed Housing Cost
@@ -126,12 +157,18 @@ function calculateScenarioB(total) {
 
     // Check Balance
     const totalDeductions = zakatAmount + housingCost + fixedGas;
-    if (total < totalDeductions) {
-        alert(`Penghasilan tidak cukup. Total potongan (Zakat+Rumah+BBM): ${formatRupiah(totalDeductions)}`);
+    // Check Balance (Use NET as the source of funds)
+    const totalDeductions = zakatAmount + housingCost + fixedGas;
+
+    // Use NET for allocation
+    const totalFundsAvailable = net;
+
+    if (totalFundsAvailable < totalDeductions) {
+        alert(`Penghasilan THP tidak cukup. Total potongan (Zakat+Rumah+BBM): ${formatRupiah(totalDeductions)}`);
         return;
     }
 
-    const allocatableAmount = total - totalDeductions;
+    const allocatableAmount = totalFundsAvailable - totalDeductions;
 
     // --- DYNAMIC ALLOCATION LOGIC ---
 
@@ -267,9 +304,13 @@ function renderResults(data) {
     const salaryDisplay = document.getElementById('salary-display');
     salaryDisplay.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <span class="salary-label">Total Gaji Masuk</span>
+            <span class="salary-label">Total Gaji Kotor</span>
             <span class="salary-value text-gold" style="font-size: 1.5rem;">${formatRupiah(data.totalInput)}</span>
         </div>
+        ${data.thpAmount ? `
+        <div style="margin-bottom: 10px; font-size: 0.9rem; color: #cbd5e1;">
+            (THP Diterima: <strong>${formatRupiah(data.thpAmount)}</strong>)
+        </div>` : ''}
         
         ${data.zakatAmount > 0 ? `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
