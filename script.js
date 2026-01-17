@@ -155,8 +155,6 @@ function calculateScenarioB(gross, net) {
     // 3. Fixed BBM
     const fixedGas = 550000;
 
-    // Check Balance
-    const totalDeductions = zakatAmount + housingCost + fixedGas;
     // Check Balance (Use NET as the source of funds)
     const totalDeductions = zakatAmount + housingCost + fixedGas;
 
@@ -272,7 +270,8 @@ function calculateScenarioB(gross, net) {
     }
 
     renderResults({
-        totalInput: total,
+        totalInput: gross,
+        thpAmount: net,
         zakatAmount,
         fixedGas,
         housingCost,
